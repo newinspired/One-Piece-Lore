@@ -1,17 +1,16 @@
-import { Link } from 'react-router-dom'
 import '../styles/header.scss'
+import backgroundHeader from '../assets/background-header-onepiece.jpg'
 
 const Header = () => {
   return (
-    <header className="header">
-      <div className="logo">
-        <Link to="/">One Piece Lore</Link>
+    <header>
+      <div className="header">
+        <img src={backgroundHeader} alt='Illustration du chapitre 1023'></img>
+        <h1>ONE PIECE - LORE</h1>
       </div>
-      <nav className="nav">
-        <Link to="/">Accueil</Link>
-        <Link to="/personnages">Personnages</Link>
-      </nav>
+      <div className='header-separate'></div>
     </header>
+
   )
 }
 

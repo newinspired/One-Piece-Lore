@@ -1,37 +1,29 @@
+$maincolor : black;
+$mainfont : 'cormorant';
+
+
+
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #001f3f;
-  padding: 1rem 2rem;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  justify-content: center;
+  margin: 10px 0px;
+  background-color: orange;
 
-  .logo a {
-    color: #f1c40f;
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-decoration: none;
-    transition: 0.3s;
-
-    &:hover {
-      color: #ffdd57;
-    }
+  img {
+    height : 200px;
+    border-radius : 50px;
+    border : 1px solid black;
   }
 
-  .nav {
-    display: flex;
-    gap: 1.5rem;
-
-    a {
-      color: #ffffffcc;
-      text-decoration: none;
-      font-weight: 500;
-      transition: 0.3s;
-
-      &:hover {
-        color: #f1c40f;
-      }
-    }
+  h1 {
+    margin : 80px 0px 0px 30px
   }
+}
+
+.header-separate{
+  display: flex;
+  justify-content: center;
+  height : 2px;
+  width : 100%;
+  background-color : black;
 }
