@@ -91,6 +91,7 @@ function LoginPage({ setUsername, setRoomCode }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Nom"
+          maxLength={15}
         />
 
         <input
@@ -98,6 +99,7 @@ function LoginPage({ setUsername, setRoomCode }) {
           value={roomInput}
           onChange={(e) => setRoomInput(e.target.value)}
           placeholder="Code de la partie"
+          maxLength={10}
         />
 
         <h3>Choisis ton avatar :</h3>

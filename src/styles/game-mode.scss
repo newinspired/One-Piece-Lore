@@ -1,0 +1,20 @@
+
+.container-game-mode{
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    height : 400px;
+    width: 400px;
+    gap : 10px;
+    background-color: yellow;
+
+    .card-game-mode{
+        display: flex;
+        align-items :center;
+        background-color : white;
+        height : 80px;
+        width : 200px;
+        border-radius : 5px;
+        border : 3px solid #1969ae;
+    }
+}

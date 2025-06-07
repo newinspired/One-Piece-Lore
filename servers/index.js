@@ -8,7 +8,7 @@ const io = new Server(server, {
   cors: { origin: '*' },
 });
 
-// roomCode => [ { id, username, avatar } ]
+// roomCode => [ { id, username, avatar, isReady } ]
 const playersInRooms = {};
 
 io.on('connection', (socket) => {
@@ -22,30 +22,50 @@ io.on('connection', (socket) => {
       playersInRooms[roomCode] = [];
     }
 
-    // Évite les doublons : remplace le joueur existant s’il est déjà là
-    const alreadyInRoom = playersInRooms[roomCode].some(p => p.id === socket.id);
-    if (!alreadyInRoom) {
+    // Évite doublons, met à jour ou ajoute le joueur
+    const existingPlayerIndex = playersInRooms[roomCode].findIndex(p => p.id === socket.id);
+    if (existingPlayerIndex === -1) {
       playersInRooms[roomCode].push({
         id: socket.id,
         username,
         avatar,
+        isReady: false,  // prêt initial à false
       });
+    } else {
+      playersInRooms[roomCode][existingPlayerIndex] = {
+        ...playersInRooms[roomCode][existingPlayerIndex],
+        username,
+        avatar,
+      };
     }
 
-    // 🔁 Envoie à tous les joueurs de la room la liste actualisée
     io.to(roomCode).emit('playerList', playersInRooms[roomCode]);
+  });
+
+  // Gère la mise à jour du statut ready
+  socket.on('playerReady', (roomCode, isReady) => {
+    if (!playersInRooms[roomCode]) return;
+
+    const player = playersInRooms[roomCode].find(p => p.id === socket.id);
+    if (player) {
+      player.isReady = isReady;
+    }
+
+    io.to(roomCode).emit('playerList', playersInRooms[roomCode]);
+
+    // Si tous prêts, lance la partie
+    const allReady = playersInRooms[roomCode].length > 0 &&
+                     playersInRooms[roomCode].every(p => p.isReady);
+    if (allReady) {
+      io.to(roomCode).emit('startGame');
+    }
   });
 
   socket.on('disconnect', () => {
     console.log('🔴 Joueur déconnecté :', socket.id);
-
     for (const roomCode in playersInRooms) {
       const before = playersInRooms[roomCode].length;
-
-      playersInRooms[roomCode] = playersInRooms[roomCode].filter(
-        (player) => player.id !== socket.id
-      );
-
+      playersInRooms[roomCode] = playersInRooms[roomCode].filter(p => p.id !== socket.id);
       const after = playersInRooms[roomCode].length;
       if (before !== after) {
         io.to(roomCode).emit('playerList', playersInRooms[roomCode]);

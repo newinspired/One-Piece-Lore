@@ -1,11 +1,32 @@
+// src/socket.js (uniquement pour le client React)
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:3001', {
-  autoConnect: true, // par défaut true, mais explicite ici
+  autoConnect: true,
   reconnection: true,
-  reconnectionAttempts: 10, // tente de se reconnecter 10 fois
-  reconnectionDelay: 1000,  // attend 1s entre chaque tentative
-  timeout: 20000,           // timeout de connexion (20s)
+  reconnectionAttempts: 10,
+  reconnectionDelay: 1000,
+  timeout: 20000,
 });
+
+// Émet que le joueur est prêt ou pas
+export function sendPlayerReady(roomCode, isReady) {
+  socket.emit('playerReady', roomCode, isReady);
+}
+
+// Écoute la liste des joueurs
+export function onPlayerListUpdate(callback) {
+  socket.on('playerList', callback);
+}
+
+// Stoppe l'écoute de la liste
+export function offPlayerListUpdate() {
+  socket.off('playerList');
+}
+
+// Écoute le signal de démarrage de partie
+export function onStartGame(callback) {
+  socket.on('startGame', callback);
+}
 
 export default socket;
