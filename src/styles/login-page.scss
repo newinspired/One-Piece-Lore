@@ -2,7 +2,7 @@ $mainfont : 'cormorant';
 
 
 body{
-    background-color: #18d5e8;
+    background-color: #1ad5e6;
     
 }
 
@@ -11,19 +11,20 @@ body{
     align-items: center;
     flex-direction: column;
 
-    margin : 30px 5% 100px 5%;
+    margin : 25px 5% 25px 5%;
 
     .modal-login{
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background-color: #fae2b4;
+        background-color: #f9e3b2;
         padding : 25px;
         border-radius : 50px;
-        gap : 25px;
-        height : 300px;
+        gap : 5px;
+        height : 380px;
         width : 450px;
+        border : 1px solid black;
 
         input,button {
             all : unset;
@@ -34,6 +35,10 @@ body{
         input{
             border : 1px solid black;
             width : 100%;
+            
+            .placeholder{
+                color : white;
+            }
         }
         button{
             background-color: #18d5e8;
@@ -42,6 +47,23 @@ body{
             padding : 5px 25px;
             font-size : 25px;
             font-family : $mainfont;
+        }
+
+        h2,h3{
+            margin : 0px;
+        }
+        .avatar-choose{
+            display : flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap : 10px;
+
+            img{
+                height : 80px;
+                width :80px;
+                border-radius : 15px;
+                border: 1px solid black;
+            }
         }
     }
 }
