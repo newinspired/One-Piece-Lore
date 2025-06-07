@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-
-const socket = io('http://localhost:3001');
+import '../styles/card-name.scss'
+import socket from '../socket';
 
 function CardName() {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
+
     socket.on('playerList', (players) => {
+      console.log('🧩 players reçus :', players);
       setPlayers(players);
     });
 
@@ -17,11 +19,11 @@ function CardName() {
   }, []);
 
   return (
-    <div className="player-cards">
+    <div className="container-card-name">
       {players.map((player) => (
-        <div key={player.id} className="player-card">
-          <img src={`/avatars/${player.avatar}`} alt="avatar" className="avatar-img" />
+        <div key={player.id} className="card-name">
           <p>{player.username}</p>
+          <img src={`/avatars/${player.avatar}`} alt={player.username} className="avatar-img" />
         </div>
       ))}
     </div>

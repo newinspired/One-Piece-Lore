@@ -1,17 +1,31 @@
-import { useParams } from 'react-router-dom';
-import CardName from '../components/card-name.jsx'
+import { useParams, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import CardName from '../components/card-name.jsx';
+import { io } from 'socket.io-client';
+import socket from '../socket';
+import '../styles/card-name.scss';
 
-function QuestionPage({ username }) {
-  const { room } = useParams(); // récupère le code du salon depuis l'URL
+function QuestionPage() {
+  const { room } = useParams();
+  const location = useLocation();
+  const { username, avatar } = location.state || {};
 
-  return (
+  useEffect(() => {
+    if (username && avatar) {
+      socket.emit('joinRoom', room, username, avatar);
+    }
+  }, [room, username, avatar]);
+
+return (
+  <div>
+    <div className='container-bonne-chance'>
+      <h2>Bonne chance <span className='nom-couleur'>{username}</span>!</h2>
+    </div>
     <div>
-      <h2>Bienvenue {username} dans le salon {room} !</h2>
-      {/* ici tu pourras afficher les questions de ce salon */}
-
       <CardName />
     </div>
-  );
+  </div>
+);
 }
 
 export default QuestionPage;
