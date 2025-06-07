@@ -1,5 +1,5 @@
 import '../styles/header.scss'
-import backgroundHeader from '../assets/background-header-onepiece.jpg'
+import backgroundHeader from '../assets/ocean-background.jpg'
 
 const Header = () => {
   return (
