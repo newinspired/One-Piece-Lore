@@ -29,15 +29,18 @@ io.on('connection', (socket) => {
         id: socket.id,
         username,
         avatar,
-        isReady: true,  // prêt initial à false
+        isReady: false,
       });
     } else {
       playersInRooms[roomCode][existingPlayerIndex] = {
-        ...playersInRooms[roomCode][existingPlayerIndex],
+        id: socket.id,
         username,
         avatar,
+        isReady: false, // ← 🔧 ceci est essentiel
       };
     }
+
+    console.log('🧍 État des joueurs après joinRoom :', playersInRooms[roomCode]);
 
     io.to(roomCode).emit('playerList', playersInRooms[roomCode]);
   });
@@ -49,6 +52,10 @@ io.on('connection', (socket) => {
     const player = playersInRooms[roomCode].find(p => p.id === socket.id);
     if (player) {
       player.isReady = isReady;
+
+      console.log(`🔄 playerReady reçu pour ${socket.id} dans la room ${roomCode} :`, isReady);
+      console.log('📦 État actuel des joueurs :', playersInRooms[roomCode]);
+
     }
 
     io.to(roomCode).emit('playerList', playersInRooms[roomCode]);

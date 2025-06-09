@@ -2,15 +2,15 @@
   {
     "id": 1,
     "difficulty": "medium",
-    "question": "Qui est le père de Luffy ?",
-    "answer": "Dragon",
+    "question": "",
+    "answer": "Baratie",
     "pointsBerry": 10
   },
   {
     "id": 2,
     "difficulty": "medium", 
-    "question": "Quel est le nom du navire de l’équipage de Luffy après le Going Merry ?",
-    "answer": "Thousand Sunny",
+    "question": "?",
+    "answer": "Fuchsia,village de fuchsia",
     "pointsBerry": 15
   }
   {

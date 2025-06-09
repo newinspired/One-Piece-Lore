@@ -30,7 +30,7 @@ function WaitingRoom({ roomCode, username, selectedMode }) {
 
   return (
     <div className='container-ready-button'>
-      <h2>Salle d’attente n°{roomCode}</h2>
+      <h2>Salle d’attente : <span className='couleur-pseudo'>{roomCode}</span></h2>
       <span>
         <span className='couleur-pseudo'>{username}</span>, choisis un mode de jeu et clique sur le bouton quand tu es prêt !
       </span>

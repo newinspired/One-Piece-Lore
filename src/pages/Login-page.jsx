@@ -91,7 +91,7 @@ function LoginPage({ setUsername, setRoomCode }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Nom"
-          maxLength={15}
+          maxLength={10}
         />
 
         <input

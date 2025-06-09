@@ -36,4 +36,9 @@
     .card-game-mode:nth-child(2) {
         background-color: #1b8dc3;
     }
+
+    .selected{
+        border: 3px solid #d9a840;
+        transform: scale(1.05); 
+    }
 }

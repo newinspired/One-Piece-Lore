@@ -13,7 +13,7 @@ function GameMode({ roomCode, username, setSelectedMode }) {
   const handleModeSelect = (modeId) => {
     console.log(`🎮 Mode sélectionné : ${modeId}`);
     setLocalSelectedMode(modeId);
-    setSelectedMode(modeId); // remonte vers QuestionPage
+    setSelectedMode(modeId);
     socket.emit('gameModeVote', { roomCode, username, modeId });
   };
 
