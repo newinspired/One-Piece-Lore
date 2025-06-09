@@ -84,7 +84,7 @@ function LoginPage({ setUsername, setRoomCode }) {
   return (
     <div className="login-page">
       <div className="modal-login">
-        <h2>Rejoins ou crée un salon :</h2>
+        <h3>Bienvenue !</h3>
 
         <input
           type="text"
@@ -102,7 +102,6 @@ function LoginPage({ setUsername, setRoomCode }) {
           maxLength={10}
         />
 
-        <h3>Choisis ton avatar :</h3>
         <div className="avatar-choose">
           {avatarOptions.map(({ name, src }) => (
             <img

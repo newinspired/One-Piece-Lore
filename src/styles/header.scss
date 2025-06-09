@@ -12,7 +12,7 @@ $mainfont : 'cormorant';
   img {
     border-radius : 50px;
 
-    width :70%;
+    width :55%;
     height: 200px;
     object-fit: cover;
   }
@@ -21,6 +21,11 @@ $mainfont : 'cormorant';
     font-size: 40px;
     position : absolute;
     color : white;
+    text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
   }
 }
 

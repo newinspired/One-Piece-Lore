@@ -21,9 +21,14 @@ function CardName() {
   return (
     <div className="container-card-name">
       {players.map((player) => (
-        <div key={player.id} className="card-name">
-          <p>{player.username}</p>
-          <img src={`/avatars/${player.avatar}`} alt={player.username} className="avatar-img" />
+        <div key={player.id} className="player-wrapper">
+          <div className="card-name">
+            <p>{player.username}</p>
+            <img src={`/avatars/${player.avatar}`} alt={player.username} className="avatar-img" />
+          </div>
+          <span className="ready-status">
+            {player.isReady ? '✅ Prêt' : '❌ Pas prêt'}
+          </span>
         </div>
       ))}
     </div>

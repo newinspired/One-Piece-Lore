@@ -4,6 +4,7 @@ import LoginPage from './pages/Login-page.jsx'
 import Footer from './components/footer.jsx'
 import QuestionPage from './pages/Question-page.jsx'
 import React, {useState} from 'react';
+import GamePage from './pages/game-page.jsx';
 
 
 function App() {
@@ -18,7 +19,8 @@ function App() {
 
         <Route path="/" element={<LoginPage setUsername={setUsername} setRoomCode={setRoomCode} />} />
         <Route path="/question/:room" element={<QuestionPage username={username} roomCode={roomCode} />} />
-        
+        <Route path="/game/:room" element={<GamePage />} />
+
       </Routes>
       <Footer />
     </BrowserRouter>

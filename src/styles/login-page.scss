@@ -22,7 +22,7 @@ body{
         background-color: #f9e3b2;
         padding : 25px;
         border-radius : 50px;
-        gap : 5px;
+        gap : 10px;
         height : 380px;
         width : 480px;
         border : 1px solid black;
@@ -48,7 +48,8 @@ body{
             padding : 0px 25px;
             font-size : 25px;
             font-family : $mainfont;
-            margin-top : 5px;
+            margin-top : 10px;
+            cursor: pointer;
 
             &:disabled {
             background-color: #bfbfbf;
@@ -57,6 +58,8 @@ body{
         }
 
         h2,h3{
+            font-family: $mainfont;
+            font-size: 22px;
             margin : 0px;
         }
 

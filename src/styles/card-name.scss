@@ -10,13 +10,20 @@
     padding : 5px;
     gap : 10px;
 
+    .player-wrapper{
+        display: flex;
+        align-items: center;
+        gap :10px;
+    }
+
+
     .card-name{
         display: flex;
         align-items :center;
         justify-content: space-between;
         background-color : white;
         height : 80px;
-        width : 200px;
+        width : 210px;
         border-radius : 5px;
         border : 3px solid #1969ae;
         
@@ -24,6 +31,7 @@
         img{
             height : 80px;
         }
+
 
         p{
             margin-left : 10px;

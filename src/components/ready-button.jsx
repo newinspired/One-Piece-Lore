@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
 import socket, { sendPlayerReady, onPlayerListUpdate, offPlayerListUpdate } from '../socket';
+import '../styles/ready-button.scss';
 
-function WaitingRoom({ roomCode, username }) {
+function WaitingRoom({ roomCode, username, selectedMode }) {
   const [players, setPlayers] = useState([]);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Écoute la mise à jour des joueurs depuis le serveur
+    // Écoute les mises à jour des joueurs
     onPlayerListUpdate((updatedPlayers) => {
       setPlayers(updatedPlayers);
     });
 
-    // Nettoyage à la destruction du composant
+        // 🔥 Quand tous les joueurs sont prêts
+    socket.on('allPlayersReady', () => {
+      navigate(`/game/${roomCode}`); // Redirige vers la page de jeu
+    });
+    
     return () => {
       offPlayerListUpdate();
     };
@@ -24,22 +29,20 @@ function WaitingRoom({ roomCode, username }) {
   };
 
   return (
-    <div>
-      <h2>Salle d’attente - {roomCode}</h2>
-      <p>Bonjour {username}, clique sur le bouton quand tu es prêt !</p>
-      
-      <button onClick={handleReadyClick}>
-        {isReady ? 'Prêt ✔️' : 'Je suis prêt'}
+    <div className='container-ready-button'>
+      <h2>Salle d’attente n°{roomCode}</h2>
+      <span>
+        <span className='couleur-pseudo'>{username}</span>, choisis un mode de jeu et clique sur le bouton quand tu es prêt !
+      </span>
+
+      <button
+        onClick={handleReadyClick}
+        disabled={!selectedMode}
+        className={!selectedMode ? 'disabled-button' : ''}
+      >
+        {isReady ? 'Prêt ✔️' : 'En attente...'}
       </button>
 
-      <h3>Liste des joueurs :</h3>
-      <ul>
-        {players.map(player => (
-          <li key={player.id}>
-            {player.username} {player.isReady ? '✅' : '❌'}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

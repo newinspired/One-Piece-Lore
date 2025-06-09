@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
         id: socket.id,
         username,
         avatar,
-        isReady: false,  // prêt initial à false
+        isReady: true,  // prêt initial à false
       });
     } else {
       playersInRooms[roomCode][existingPlayerIndex] = {
@@ -59,6 +59,7 @@ io.on('connection', (socket) => {
     if (allReady) {
       io.to(roomCode).emit('startGame');
     }
+
   });
 
   socket.on('disconnect', () => {
