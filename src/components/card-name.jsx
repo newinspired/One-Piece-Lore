@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faXmark, faCrown} from '@fortawesome/free-solid-svg-icons';
 import { io } from 'socket.io-client';
 import '../styles/card-name.scss'
 import socket from '../socket';
 
-function CardName() {
+
+
+function CardName({ currentSocketId }) {
   const [players, setPlayers] = useState([]);
 
   useEffect(() => {
@@ -21,12 +25,21 @@ function CardName() {
   return (
   <div className="container-card-name">
     {players.map((player) => {
+      const isCurrentUser = player.id === currentSocketId;
       console.log(`🎯 Statut readiness - ${player.username} (${player.id}):`, player.isReady);
 
       return (
         <div key={player.id} className="player-wrapper">
           <div className="card-name">
-            <p>{player.username}</p>
+            <p>{player.username}
+                {player.isHost && (
+                      <FontAwesomeIcon
+                        icon={faCrown}
+                        style={{ color: isCurrentUser ? 'orange' : 'gold', marginLeft: '8px' }}
+                        title={isCurrentUser ? 'Vous êtes le chef' : 'Chef du salon'}
+                      />
+                    )}
+                </p>
             <img
               src={`/avatars/${player.avatar}`}
               alt={player.username}
@@ -34,7 +47,11 @@ function CardName() {
             />
           </div>
           <span className="ready-status">
-            {typeof player.isReady === 'boolean' && player.isReady ? '✅ Prêt' : '❌ Pas prêt'}
+            {typeof player.isReady === 'boolean' && player.isReady ? (
+              <FontAwesomeIcon icon={faCheck} style={{ color: 'green' }} />
+            ) : (
+              <FontAwesomeIcon icon={faXmark} style={{ color: 'red' }} />
+            )}
           </span>
         </div>
       );

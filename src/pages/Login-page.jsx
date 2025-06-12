@@ -13,7 +13,7 @@ import hancock from '../../public/avatars/hancock-manga.jpg';
 import sanji from '../../public/avatars/sanji.jpg';
 import mihawk from '../../public/avatars/mihawk.jpg';
 import nami from '../../public/avatars/nami.jpg';
-import zoro from '../../public/avatars/zoro.jpg';
+import zoro from '../../public/avatars/zoro-wano.jpg';
 import robin from '../../public/avatars/robin.jpg';
 
 function LoginPage({ setUsername, setRoomCode }) {
@@ -84,7 +84,7 @@ function LoginPage({ setUsername, setRoomCode }) {
   return (
     <div className="login-page">
       <div className="modal-login">
-        <h3>Bienvenue !</h3>
+        <h3>ONE PIECE LORE</h3>
 
         <input
           type="text"

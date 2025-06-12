@@ -1,12 +1,12 @@
 
-
+body{
+    padding : 0px;
+    margin : 0px;
+}
 .container{
     display: flex;
-
-    margin : 0px 5% 0px 5%;
     cursor :default;
-    justify-content: center;            
-    margin: 0;               
+    justify-content: center;             
 
 
     .container-waiting{

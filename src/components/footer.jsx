@@ -11,14 +11,7 @@ return (
     <footer>
         <div className='footer-separate'></div>
         <div className='footer'>
-            <div className='chapter1031'>
-                <img src ={leftImage} alt='caca'></img>
-                <img src={rightImage} alt='caca'></img>
-            </div>
-            <img src={chapitre1054} alt='Les empereurs'></img>
             <img src={illustrationFooter} alt='Les mugiwara'></img>
-
-            
         </div>
     </footer>
     )

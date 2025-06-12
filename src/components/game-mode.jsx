@@ -7,7 +7,7 @@ const modes = [
   { id: 'OnePieceFinalTest', name: 'One Piece Final Test' },
 ];
 
-function GameMode({ roomCode, username, setSelectedMode }) {
+function GameMode({ roomCode, username, setSelectedMode, isHost }) {
   const [localSelectedMode, setLocalSelectedMode] = useState(null);
 
   const handleModeSelect = (modeId) => {
@@ -16,14 +16,19 @@ function GameMode({ roomCode, username, setSelectedMode }) {
     setSelectedMode(modeId);
     socket.emit('gameModeVote', { roomCode, username, modeId });
   };
-
+  
   return (
     <div className="container-game-mode">
       {modes.map((mode) => (
         <div
           key={mode.id}
-          className={`card-game-mode ${localSelectedMode === mode.id ? 'selected' : ''}`}
-          onClick={() => handleModeSelect(mode.id)}
+          className={`card-game-mode 
+            ${localSelectedMode === mode.id ? 'selected' : ''} 
+            ${!isHost ? 'disabled' : ''}
+          `}
+          onClick={() => {
+            if (isHost) handleModeSelect(mode.id);
+          }}
         >
           {mode.name}
         </div>

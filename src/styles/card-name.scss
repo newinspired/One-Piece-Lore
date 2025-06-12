@@ -3,8 +3,7 @@
 .container-card-name{
     display: flex;
     flex-direction: column;
-    height : 400px;
-    width:auto;
+
     flex-wrap: wrap;
     width: fit-content;
     padding : 5px;
@@ -16,6 +15,10 @@
         gap :10px;
     }
 
+    .ready-status{
+        width: 20px;
+        font-size: 24px;
+    }
 
     .card-name{
         display: flex;
@@ -47,6 +50,8 @@
     flex-direction: column;
     justify-content: center;
     width : 400px;
+    height : 480px;     
+
     .nom-couleur{
         color : blue;
     }
