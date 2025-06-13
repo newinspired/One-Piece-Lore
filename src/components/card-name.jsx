@@ -13,7 +13,6 @@ function CardName({ currentSocketId }) {
   useEffect(() => {
 
     socket.on('playerList', (players) => {
-      console.log('🧩 players reçus :', players);
       setPlayers(players);
     });
 
@@ -26,7 +25,6 @@ function CardName({ currentSocketId }) {
   <div className="container-card-name">
     {players.map((player) => {
       const isCurrentUser = player.id === currentSocketId;
-      console.log(`🎯 Statut readiness - ${player.username} (${player.id}):`, player.isReady);
 
       return (
         <div key={player.id} className="player-wrapper">

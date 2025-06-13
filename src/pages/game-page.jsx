@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import '../styles/game-page.scss';
+import '../styles/question.scss';
 import socket from '../socket';
-import GameModeQuestion from '../components/game-mode-question.jsx'
+import Question from '../components/question.jsx'
 
 function GamePage() {
   const { room } = useParams();
@@ -22,8 +22,8 @@ function GamePage() {
   }, [room]);
 
   return (
-    <div className="container-game">
-      <GameModeQuestion />
+    <div>
+      <Question />
     </div>
   );
 }

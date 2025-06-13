@@ -2,43 +2,139 @@
   {
     "id": 1,
     "difficulty": "medium",
-    "question": "es ce que le caca ?",
-    "answer": "Baratie",
+    "question": "Dans quelle ville d’East Blue Gol D. Roger a-t-il été exécuté ?",
+    "answer": "Loguetown",
     "pointsBerry": 10
   },
-  {
+      {
     "id": 2,
+    "difficulty": "medium",
+    "question": "Qui est la personne sur cette image ?",
+    "imageUrl":"../../public/images-question/zeff-baratie.jpg",
+    "answer": "Zeff",
+    "pointsBerry": 15
+  },
+  {
+    "id": 13,
     "difficulty": "medium", 
-    "question": "?",
-    "answer": "Fuchsia,village de fuchsia",
+    "question": "Comment s'appelle le navire-restaurant dirigé par Zeff dans East Blue ?",
+    "answer": "Baratie",
     "pointsBerry": 15
   },
   {
     "id": 3,
     "difficulty": "medium",
-    "question": "Qui est le père de Luffy ?",
-    "answer": "Dragon",
+    "question": "Sous les ordres de quelle pirate Kobby travaillait-il comme mousse lorsqu’il a rencontré Luffy ?",
+    "answer": "Alvida",
     "pointsBerry": 10
   },
   {
     "id": 4,
     "difficulty": "medium",
-    "question": "Quel est le nom du navire de l’équipage de Luffy après le Going Merry ?",
-    "answer": "Thousand Sunny",
+    "question": "Quel est le nom du village attaqué par Kuro et ses pirates sous couverture ?",
+    "answer": "Syrup",
     "pointsBerry": 15
   },
   {
     "id": 5,
     "difficulty": "medium",
-    "question": "Qui est le père de Luffy ?",
-    "answer": "Dragon",
+    "question": "Quel ancien soldat du royaume de Drum devient roi après la chute de Wapol ?",
+    "answer": "Dalton",
     "pointsBerry": 10
   },
   {
     "id": 6,
     "difficulty": "medium",
-    "question": "Quel est le nom du navire de l’équipage de Luffy après le Going Merry ?",
-    "answer": "Thousand Sunny",
+    "question": "Quel médecin vit au sommet du château de Drum avec son renne assistant ?",
+    "answer": "Kureha",
+    "pointsBerry": 15
+  },
+    {
+    "id": 7,
+    "difficulty": "medium",
+    "question": "Quel homme-poisson est le chef du gang qui a pris le contrôle du village de Nami ?",
+    "answer": "Arlong",
+    "pointsBerry": 10
+  },
+  {
+    "id": 8,
+    "difficulty": "medium",
+    "question": "Qui est la figure maternelle pour Luffy dans son village d’origine ?",
+    "answer": "Makino",
+    "pointsBerry": 15
+  },
+    {
+    "id": 9,
+    "difficulty": "medium",
+    "question": "Quel est le premier Grand Corsaire que l’on rencontre dans l’épopée des Mugiwaras ?",
+    "answer": "Mihawk",
+    "pointsBerry": 10
+  },
+  {
+    "id": 10,
+    "difficulty": "medium",
+    "question": "Quel capitaine pirate possède le pouvoir du Fruit du Bara Bara (Fruit de la division) ?",
+    "answer": ["Baggy", "Buggy", "Buggy le Clown"],
+    "pointsBerry": 15
+  },
+
+
+  {
+    "id": 11,
+    "difficulty": "medium",
+    "question": "Quel personnage manie un jutte en granite marin et possède le pouvoir du Fruit de la Fumée ?",
+    "answer": "Smoker",
+    "pointsBerry": 15
+  },
+  {
+    "id": 12,
+    "difficulty": "medium",
+    "question": "Quelle jeune marine manie une épée et partage un fort lien avec Zoro, notamment en voulant récupérer des sabres légendaires ?",
+    "answer": "Tashigi",
+    "pointsBerry": 15
+  },
+
+
+
+
+
+
+
+
+  {
+    "id": 14,
+    "difficulty": "medium",
+    "question": "Quelle jeune marine manie une épée et partage un fort lien avec Zoro, notamment en voulant récupérer des sabres légendaires ?",
+    "answer": "Tashigi",
+    "pointsBerry": 15
+  },
+    {
+    "id": 15,
+    "difficulty": "medium",
+    "question": "Quel personnage manie un jutte en granite marin et possède le pouvoir du Fruit de la Fumée ?",
+    "answer": "Smoker",
+    "pointsBerry": 15
+  },
+  {
+    "id": 16,
+    "difficulty": "medium",
+    "question": "Quelle jeune marine manie une épée et partage un fort lien avec Zoro, notamment en voulant récupérer des sabres légendaires ?",
+    "answer": "Tashigi",
+    "pointsBerry": 15
+  },
+    {
+    "id": 17,
+    "difficulty": "medium",
+    "question": "Quel personnage manie un jutte en granite marin et possède le pouvoir du Fruit de la Fumée ?",
+    "answer": "Smoker",
+    "pointsBerry": 15
+  },
+  {
+    "id": 18,
+    "difficulty": "medium",
+    "question": "Quelle jeune marine manie une épée et partage un fort lien avec Zoro, notamment en voulant récupérer des sabres légendaires ?",
+    "answer": "Tashigi",
     "pointsBerry": 15
   }
 ]
+

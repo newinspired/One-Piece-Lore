@@ -1,12 +1,75 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
+
 const playersInRooms = {}; // roomCode => [ { id, username, avatar, isReady, isHost } ]
+
+
+const games = {}; // roomCode => { currentIndex, timer }
+
+function startGameForRoom(roomCode) {
+  if (!playersInRooms[roomCode]) return;
+
+  const gameState = {
+      currentIndex: 0
+    };
+    games[roomCode] = gameState;
+
+    const emitQuestion = () => {
+      const currentQuestion = questions[gameState.currentIndex];
+      io.to(roomCode).emit('newQuestion', {
+        question: currentQuestion,
+        timeLeft: 15
+      });
+
+      let timeLeft = 15;
+      const countdown = setInterval(() => {
+        timeLeft--;
+        io.to(roomCode).emit('timer', timeLeft);
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+
+          // Afficher feedback
+          io.to(roomCode).emit('questionEnded', {
+            correctAnswer: currentQuestion.answer
+          });
+
+          // Pause de 5s avant la prochaine question
+          setTimeout(() => {
+            gameState.currentIndex++;
+
+            if (gameState.currentIndex < questions.length) {
+              emitQuestion();
+            } else {
+              io.to(roomCode).emit('gameEnded');
+              delete games[roomCode];
+            }
+          }, 5000);
+        }
+      }, 1000);
+    };
+
+    emitQuestion();
+  }
+
+  io.on('connection', (socket) => {
+    // ...
+    socket.on('playerReady', (roomCode, isReady) => {
+      
+        const allReady = playersInRooms[roomCode].length > 0 &&
+                   playersInRooms[roomCode].every(p => p.isReady);
+      // ... déjà en place
+      if (allReady) {
+        io.to(roomCode).emit('startGame');
+        startGameForRoom(roomCode); // 🚀 Lancement boucle serveur
+      }
+    });
+  });
 
 io.on('connection', (socket) => {
   console.log('🟢 Nouveau joueur connecté :', socket.id);

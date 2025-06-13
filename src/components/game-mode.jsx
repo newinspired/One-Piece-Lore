@@ -11,7 +11,6 @@ function GameMode({ roomCode, username, setSelectedMode, isHost }) {
   const [localSelectedMode, setLocalSelectedMode] = useState(null);
 
   const handleModeSelect = (modeId) => {
-    console.log(`🎮 Mode sélectionné : ${modeId}`);
     setLocalSelectedMode(modeId);
     setSelectedMode(modeId);
     socket.emit('gameModeVote', { roomCode, username, modeId });
