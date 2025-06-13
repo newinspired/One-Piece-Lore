@@ -15,7 +15,7 @@ function WaitingRoom({ roomCode, username, selectedMode, isHost }) {
     });
 
     // 🔥 Quand tous les joueurs sont prêts
-    socket.on('allPlayersReady', () => {
+    socket.on('startGame', () => {
       navigate(`/game/${roomCode}`); // Redirige vers la page de jeu
     });
     

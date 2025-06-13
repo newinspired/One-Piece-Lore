@@ -1,9 +1,6 @@
 import '../styles/footer.scss'
-import illustrationFooter from '../assets/illustration-chapitre-1023.png'
-import leftImage from '../assets/left-image.jpg'
-import rightImage from '../assets/right-image.jpg'
-import chapitre1054 from '../assets/chapitre-1054.jpg'
-import chapitre1133 from '../assets/chapitre-1103.jpg'
+import illustrationFooter from '../assets/header-footer/illustration-chapitre-1023.png'
+
 
 
 const Footer = () => {

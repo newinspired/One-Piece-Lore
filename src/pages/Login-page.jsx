@@ -5,16 +5,16 @@ import { useState, useEffect } from 'react';
 import socket from '../socket';
 
 // Avatars importés
-import luffy from '../../public/avatars/luffy.jpg';
-import rayleighAvatar from '../../public/avatars/rayleigh-avatar.jpg';
-import trafalgarLaw from '../../public/avatars/trafalgar-law-manga.jpg';
-import shanksAvatar from '../../public/avatars/shanks-manga.jpg';
-import hancock from '../../public/avatars/hancock-manga.jpg';
-import sanji from '../../public/avatars/sanji.jpg';
-import mihawk from '../../public/avatars/mihawk.jpg';
-import nami from '../../public/avatars/nami.jpg';
-import zoro from '../../public/avatars/zoro-wano.jpg';
-import robin from '../../public/avatars/robin.jpg';
+import luffy from '../assets/avatars/luffy-wano.jpg';
+import rayleighAvatar from '../assets/avatars/luffy-wano.jpg';
+import trafalgarLaw from '../assets/avatars/luffy-wano.jpg';
+import shanksAvatar from '../assets/avatars/luffy-wano.jpg';
+import hancock from '../assets/avatars/luffy-wano.jpg';
+import sanji from '../assets/avatars/luffy-wano.jpg';
+import mihawk from '../assets/avatars/luffy-wano.jpg';
+import nami from '../assets/avatars/luffy-wano.jpg';
+import zoro from '../assets/avatars/luffy-wano.jpg';
+import robin from '../assets/avatars/luffy-wano.jpg';
 
 function LoginPage({ setUsername, setRoomCode }) {
   const navigate = useNavigate();
@@ -53,14 +53,14 @@ function LoginPage({ setUsername, setRoomCode }) {
       localStorage.setItem('avatar', selectedAvatar);
 
       // Envoie les infos au serveur
-      const avatarFilename = avatarObj.src.split('/').pop(); // extrait 'luffy.jpg'
-      socket.emit('joinRoom', trimmedRoom, trimmed, avatarFilename);
+      const avatarName = avatarObj.name; // extrait 'Luffy', 'Zoro', etc.
+      socket.emit('joinRoom', trimmedRoom, trimmed, avatarName);
 
       // Redirection
       navigate(`/question/${trimmedRoom}`, {
       state: {
         username: trimmed,
-        avatar: avatarFilename,
+        avatar: avatarName,
       }
 });
     }

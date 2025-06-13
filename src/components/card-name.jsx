@@ -4,6 +4,7 @@ import { faCheck, faXmark, faCrown} from '@fortawesome/free-solid-svg-icons';
 import { io } from 'socket.io-client';
 import '../styles/card-name.scss'
 import socket from '../socket';
+import avatarMap from '../assets/avatars/avatars-map.js';
 
 
 
@@ -39,7 +40,7 @@ function CardName({ currentSocketId }) {
                     )}
                 </p>
             <img
-              src={`/avatars/${player.avatar}`}
+              src={avatarMap[player.avatar] || avatarMap['Luffy']}
               alt={player.username}
               className="avatar-img"
             />

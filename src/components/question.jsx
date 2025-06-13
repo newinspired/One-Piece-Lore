@@ -90,7 +90,7 @@ const Question = ({ roomCode, username, avatar }) => {
 
       <div className="score">Score : {score} berries</div>
       {/* Optionnel : liste joueurs avec scores */}
-      <div className="player-list">
+      <div className="container-ranking">
         <h4>Joueurs :</h4>
         <ul>
           {players.map((p) => (
