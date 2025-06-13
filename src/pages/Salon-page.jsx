@@ -1,5 +1,3 @@
-
-
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import CardName from '../components/card-name.jsx';
@@ -71,16 +69,22 @@ function QuestionPage() {
   return (
     <div className="container">
       <div className="container-bonne-chance">
-        <CardName currentSocketId={socket.id}/>
+        <CardName currentSocketId={socket.id} />
       </div>
       <div className="container-waiting">
-        <WaitingRoom roomCode={room} username={username} selectedMode={selectedMode} />
+        {/* Passe isHost à WaitingRoom pour gérer le mode obligatoire uniquement pour host */}
+        <WaitingRoom
+          roomCode={room}
+          username={username}
+          selectedMode={selectedMode}
+          isHost={isHost}  // <-- Important
+        />
       </div>
       <GameMode
         roomCode={room}
         username={username}
         setSelectedMode={setSelectedMode}
-        isHost={isHost}
+        isHost={isHost}  // <-- Rend interactif uniquement pour host
         currentSocketId={socket.id}
       />
     </div>

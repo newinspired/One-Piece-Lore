@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import '../styles/game-page.scss';
 import socket from '../socket';
+import GameModeQuestion from '../components/game-mode-question.jsx'
 
 function GamePage() {
   const { room } = useParams();
@@ -22,18 +23,7 @@ function GamePage() {
 
   return (
     <div className="container-game">
-      <h2>🎮 Partie lancée !</h2>
-      {questions.length === 0 ? (
-        <p>Chargement des questions...</p>
-      ) : (
-        <ul>
-          {questions.map((q, index) => (
-            <li key={index}>
-              <strong>Q{index + 1}:</strong> {q.text}
-            </li>
-          ))}
-        </ul>
-      )}
+      <GameModeQuestion />
     </div>
   );
 }

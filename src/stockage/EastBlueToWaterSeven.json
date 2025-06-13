@@ -2,7 +2,7 @@
   {
     "id": 1,
     "difficulty": "medium",
-    "question": "",
+    "question": "es ce que le caca ?",
     "answer": "Baratie",
     "pointsBerry": 10
   },
@@ -12,7 +12,7 @@
     "question": "?",
     "answer": "Fuchsia,village de fuchsia",
     "pointsBerry": 15
-  }
+  },
   {
     "id": 3,
     "difficulty": "medium",
@@ -26,7 +26,7 @@
     "question": "Quel est le nom du navire de l’équipage de Luffy après le Going Merry ?",
     "answer": "Thousand Sunny",
     "pointsBerry": 15
-  }
+  },
   {
     "id": 5,
     "difficulty": "medium",
