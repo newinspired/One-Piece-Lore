@@ -10,6 +10,7 @@ const Question = () => {
 
   const currentQuestion = questionsData[currentIndex];
 
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -52,10 +53,9 @@ const Question = () => {
             type="text"
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}
-            placeholder="Ta réponse"
+            placeholder=""
             required
           />
-          <button type="submit">Valider</button>
         </form>
       </div>
       <div className="container-ranking">

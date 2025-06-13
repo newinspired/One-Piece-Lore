@@ -4,7 +4,7 @@ const { Server } = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
-
+const questions = require('../src/stockage/EastBlueToWaterSeven.json');
 
 const playersInRooms = {}; // roomCode => [ { id, username, avatar, isReady, isHost } ]
 
@@ -24,6 +24,10 @@ function startGameForRoom(roomCode) {
       io.to(roomCode).emit('newQuestion', {
         question: currentQuestion,
         timeLeft: 15
+      });
+
+      playersInRooms[roomCode].forEach(player => {
+        player.hasAnswered = false;
       });
 
       let timeLeft = 15;
@@ -58,7 +62,38 @@ function startGameForRoom(roomCode) {
   }
 
   io.on('connection', (socket) => {
-    // ...
+
+
+    socket.on('playerAnswer', (roomCode, answer) => {
+    if (!playersInRooms[roomCode] || !games[roomCode]) return;
+
+    const player = playersInRooms[roomCode].find(p => p.id === socket.id);
+    if (!player) return;
+
+    const gameState = games[roomCode];
+    const currentQuestion = questions[gameState.currentIndex];
+    if (!currentQuestion) return;
+
+    const correctAnswer = currentQuestion.answer.trim().toLowerCase();
+    const userAnswer = answer.trim().toLowerCase();
+
+    // Pour gérer plusieurs réponses d’un même joueur, tu peux aussi stocker un booléen "answered" par joueur
+    if (player.hasAnswered) return; // Empêche plusieurs réponses
+
+    player.hasAnswered = true; // marque comme répondu
+
+    if (userAnswer === correctAnswer) {
+      player.score = (player.score || 0) + currentQuestion.pointsBerry;
+    }
+
+    // Envoie la liste mise à jour avec scores
+    io.to(roomCode).emit('playerList', playersInRooms[roomCode]);
+    });
+        
+
+    socket.on('startGame', (roomCode) => {
+      startGame(roomCode);
+    });
     socket.on('playerReady', (roomCode, isReady) => {
       
         const allReady = playersInRooms[roomCode].length > 0 &&
@@ -96,6 +131,9 @@ io.on('connection', (socket) => {
         avatar,
         isReady: false,
         isHost,
+        score: 0,         
+        hasAnswered: false
+      
       });
     } else {
       // Joueur existant (reconnexion ou rafraîchissement)
