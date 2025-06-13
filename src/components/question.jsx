@@ -1,42 +1,69 @@
-import { useState } from 'react';
-import questionsData from '../stockage/EastBlueToWaterSeven.json';
-import '../styles/question.scss'; 
+import { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
 
-const Question = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const socket = io('http://localhost:3001');
+
+const Question = ({ roomCode, username, avatar }) => {
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
-  const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState('');
+  const [score, setScore] = useState(0);
+  const [isHost, setIsHost] = useState(false);
+  const [players, setPlayers] = useState([]);
 
-  const currentQuestion = questionsData[currentIndex];
+  useEffect(() => {
+    socket.emit('joinRoom', roomCode, username, avatar);
 
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    // ✅ FORCER le ready automatiquement (à faire uniquement pour tests)
+    socket.emit('playerReady', roomCode, true);
 
-    const correctAnswer = currentQuestion.answer.trim().toLowerCase();
-    const userResponse = userAnswer.trim().toLowerCase();
+    socket.on('hostStatus', (hostStatus) => setIsHost(hostStatus));
+    socket.on('playerList', (playersList) => setPlayers(playersList));
 
-    if (userResponse === correctAnswer) {
-      setFeedback('✅ Bonne réponse !');
-      setScore(score + currentQuestion.pointsBerry);
-    } else {
-      setFeedback(`❌ Mauvaise réponse. Réponse attendue : ${currentQuestion.answer}`);
-    }
-
-    setTimeout(() => {
-      setFeedback('');
+    socket.on('newQuestion', ({ question, timeLeft }) => {
+      setCurrentQuestion(question);
+      setTimeLeft(timeLeft);
       setUserAnswer('');
-      if (currentIndex < questionsData.length - 1) {
-        setCurrentIndex(currentIndex + 1);
+      setFeedback('');
+    });
+
+    socket.on('timer', (time) => setTimeLeft(time));
+
+    socket.on('questionEnded', ({ correctAnswer, scores }) => {
+      if (userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase()) {
+        setFeedback('✅ Bonne réponse !');
       } else {
-        alert(`🎉 Fin du quiz ! Score total : ${score} berries`);
+        setFeedback(`❌ Mauvaise réponse. Réponse attendue : ${correctAnswer}`);
       }
-    }, 2000);
+      setScore(scores?.[socket.id] || 0); // sécuriser si scores est undefined
+    });
+
+    socket.on('gameEnded', () => {
+      alert(`🎉 Fin du quiz ! Score total : ${score} berries`);
+    });
+
+    return () => {
+      socket.off('hostStatus');
+      socket.off('playerList');
+      socket.off('newQuestion');
+      socket.off('timer');
+      socket.off('questionEnded');
+      socket.off('gameEnded');
+    };
+  },[roomCode, username, avatar, userAnswer, score]);
+
+  const handleChange = (e) => {
+    setUserAnswer(e.target.value);
+    socket.emit('playerAnswer', roomCode, e.target.value);
   };
+
+  if (!currentQuestion) return <p>Chargement...</p>;
 
   return (
     <div className="container-question-component">
+      
+
       {currentQuestion.imageUrl ? (
         <div className="question-image">
           <img src={currentQuestion.imageUrl} alt="Illustration de la question" />
@@ -44,22 +71,34 @@ const Question = () => {
       ) : (
         <div className="question-image empty"></div>
       )}
-    
-      <div className="container-question">
-        <p className="question-text">{currentQuestion.question}</p>
-        
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-            placeholder=""
-            required
-          />
-        </form>
-      </div>
-      <div className="container-ranking">
 
+      <div className="container-question">
+        <div className="timer">Temps restant : {timeLeft}</div>
+        <p className="question-text">{currentQuestion.question}</p>
+
+        <input
+          type="text"
+          value={userAnswer}
+          onChange={handleChange}
+          placeholder="Tape ta réponse ici"
+          disabled={timeLeft === 0}
+          autoFocus
+        />
+
+        {feedback && <div className="feedback">{feedback}</div>}
+      </div>
+
+      <div className="score">Score : {score} berries</div>
+      {/* Optionnel : liste joueurs avec scores */}
+      <div className="player-list">
+        <h4>Joueurs :</h4>
+        <ul>
+          {players.map((p) => (
+            <li key={p.id}>
+              {p.username} {p.isHost ? '(Host)' : ''} - {p.score || 0} berries
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

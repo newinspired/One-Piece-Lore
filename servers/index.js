@@ -4,152 +4,140 @@ const { Server } = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
+
 const questions = require('../src/stockage/EastBlueToWaterSeven.json');
 
-const playersInRooms = {}; // roomCode => [ { id, username, avatar, isReady, isHost } ]
-
-
-const games = {}; // roomCode => { currentIndex, timer }
+const playersInRooms = {}; // roomCode => [ { id, username, avatar, isReady, isHost, score, lastAnswer } ]
+const games = {}; // roomCode => { currentIndex, intervalId, countdown, acceptingAnswers }
 
 function startGameForRoom(roomCode) {
   if (!playersInRooms[roomCode]) return;
 
+  console.log(`🎮 Démarrage du jeu pour la room ${roomCode}`);
+
   const gameState = {
-      currentIndex: 0
-    };
-    games[roomCode] = gameState;
-
-    const emitQuestion = () => {
-      const currentQuestion = questions[gameState.currentIndex];
-      io.to(roomCode).emit('newQuestion', {
-        question: currentQuestion,
-        timeLeft: 15
-      });
-
-      playersInRooms[roomCode].forEach(player => {
-        player.hasAnswered = false;
-      });
-
-      let timeLeft = 15;
-      const countdown = setInterval(() => {
-        timeLeft--;
-        io.to(roomCode).emit('timer', timeLeft);
-
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-
-          // Afficher feedback
-          io.to(roomCode).emit('questionEnded', {
-            correctAnswer: currentQuestion.answer
-          });
-
-          // Pause de 5s avant la prochaine question
-          setTimeout(() => {
-            gameState.currentIndex++;
-
-            if (gameState.currentIndex < questions.length) {
-              emitQuestion();
-            } else {
-              io.to(roomCode).emit('gameEnded');
-              delete games[roomCode];
-            }
-          }, 5000);
-        }
-      }, 1000);
-    };
-
-    emitQuestion();
-  }
-
-  io.on('connection', (socket) => {
+    currentIndex: 0
+  };
+  games[roomCode] = gameState;
+}
 
 
-    socket.on('playerAnswer', (roomCode, answer) => {
-    if (!playersInRooms[roomCode] || !games[roomCode]) return;
+function startGameForRoom(roomCode) {
+  if (!playersInRooms[roomCode] || playersInRooms[roomCode].length === 0) return;
 
-    const player = playersInRooms[roomCode].find(p => p.id === socket.id);
-    if (!player) return;
+  const gameState = {
+    currentIndex: 0,
+    intervalId: null,
+    countdown: 15,
+    acceptingAnswers: true,
+  };
+  games[roomCode] = gameState;
 
-    const gameState = games[roomCode];
-    const currentQuestion = questions[gameState.currentIndex];
-    if (!currentQuestion) return;
-
-    const correctAnswer = currentQuestion.answer.trim().toLowerCase();
-    const userAnswer = answer.trim().toLowerCase();
-
-    // Pour gérer plusieurs réponses d’un même joueur, tu peux aussi stocker un booléen "answered" par joueur
-    if (player.hasAnswered) return; // Empêche plusieurs réponses
-
-    player.hasAnswered = true; // marque comme répondu
-
-    if (userAnswer === correctAnswer) {
-      player.score = (player.score || 0) + currentQuestion.pointsBerry;
+  const emitQuestion = () => {
+    if (gameState.currentIndex >= questions.length) {
+      io.to(roomCode).emit('gameEnded');
+      delete games[roomCode];
+      return;
     }
 
-    // Envoie la liste mise à jour avec scores
-    io.to(roomCode).emit('playerList', playersInRooms[roomCode]);
-    });
-        
+    const currentQuestion = questions[gameState.currentIndex];
 
-    socket.on('startGame', (roomCode) => {
-      startGame(roomCode);
+    // Reset players' lastAnswer and acceptingAnswers flag
+    playersInRooms[roomCode].forEach((player) => {
+      player.lastAnswer = '';
     });
-    socket.on('playerReady', (roomCode, isReady) => {
-      
-        const allReady = playersInRooms[roomCode].length > 0 &&
-                   playersInRooms[roomCode].every(p => p.isReady);
-      // ... déjà en place
-      if (allReady) {
-        io.to(roomCode).emit('startGame');
-        startGameForRoom(roomCode); // 🚀 Lancement boucle serveur
+    gameState.acceptingAnswers = true;
+    gameState.countdown = 15;
+
+    io.to(roomCode).emit('newQuestion', {
+      question: currentQuestion,
+      timeLeft: gameState.countdown,
+    });
+
+    // Timer countdown
+    if (gameState.intervalId) clearInterval(gameState.intervalId);
+
+    gameState.intervalId = setInterval(() => {
+      gameState.countdown--;
+
+      io.to(roomCode).emit('timer', gameState.countdown);
+
+      if (gameState.countdown <= 0) {
+        clearInterval(gameState.intervalId);
+        gameState.acceptingAnswers = false;
+
+        if (typeof currentQuestion.answer !== 'string') {
+          console.error('❌ currentQuestion.answer n\'est pas une chaîne :', currentQuestion.answer);
+          return;
+}
+        // Calcul des scores
+        const correctAnswer = currentQuestion.answer.trim().toLowerCase();
+        playersInRooms[roomCode].forEach((player) => {
+          const answer = (player.lastAnswer || '').trim().toLowerCase();
+          if (answer === correctAnswer) {
+            player.score = (player.score || 0) + (currentQuestion.pointsBerry || 0);
+          }
+        });
+
+        // Préparation scores à envoyer (id => score)
+        const scores = {};
+        playersInRooms[roomCode].forEach((p) => {
+          scores[p.id] = p.score || 0;
+        });
+
+        io.to(roomCode).emit('questionEnded', {
+          correctAnswer: currentQuestion.answer,
+          scores,
+        });
+
+        // Pause 5 secondes puis question suivante
+        setTimeout(() => {
+          gameState.currentIndex++;
+          emitQuestion();
+        }, 5000);
       }
-    });
-  });
+    }, 1000);
+  };
+
+  emitQuestion();
+}
 
 io.on('connection', (socket) => {
-  console.log('🟢 Nouveau joueur connecté :', socket.id);
+  console.log('🔌 Joueur connecté :', socket.id);
 
   socket.on('joinRoom', (roomCode, username, avatar) => {
-    console.log(`📩 joinRoom reçu: roomCode=${roomCode}, username=${username}, avatar=${avatar}`);
-
     socket.join(roomCode);
 
-    if (!playersInRooms[roomCode]) {
-      playersInRooms[roomCode] = [];
-    }
+    if (!playersInRooms[roomCode]) playersInRooms[roomCode] = [];
 
-    // Cherche si le joueur est déjà dans la room (reconnexion)
     let isHost = false;
     const existingPlayerIndex = playersInRooms[roomCode].findIndex(p => p.id === socket.id);
 
     if (existingPlayerIndex === -1) {
-      // Nouveau joueur
-      isHost = playersInRooms[roomCode].length === 0; // Premier joueur = host
+      isHost = playersInRooms[roomCode].length === 0; // premier joueur = host
       playersInRooms[roomCode].push({
         id: socket.id,
         username,
         avatar,
         isReady: false,
         isHost,
-        score: 0,         
-        hasAnswered: false
-      
+        score: 0,
+        lastAnswer: '',
       });
     } else {
-      // Joueur existant (reconnexion ou rafraîchissement)
+      // Joueur déjà présent (reconnexion)
       const existingPlayer = playersInRooms[roomCode][existingPlayerIndex];
       playersInRooms[roomCode][existingPlayerIndex] = {
         ...existingPlayer,
         username,
         avatar,
         isReady: false,
-        // NE PAS modifier isHost ici pour conserver le statut
         isHost: existingPlayer.isHost,
       };
       isHost = existingPlayer.isHost;
     }
 
-    // En cas d'absence totale de host, on force le premier joueur à être host
+    // Vérifier s'il y a un host sinon assigner
     const hasHost = playersInRooms[roomCode].some(p => p.isHost);
     if (!hasHost && playersInRooms[roomCode].length > 0) {
       playersInRooms[roomCode][0].isHost = true;
@@ -158,14 +146,24 @@ io.on('connection', (socket) => {
       }
     }
 
-    console.log(`👥 Room ${roomCode} →`, playersInRooms[roomCode]);
-    console.log('🧍 État des joueurs après joinRoom :', playersInRooms[roomCode]);
-
-    // Envoie la liste des joueurs à tous dans la room
     io.to(roomCode).emit('playerList', playersInRooms[roomCode]);
-
-    // Informe CE joueur s’il est host
     socket.emit('hostStatus', isHost);
+
+    console.log(`📥 Room ${roomCode} joueurs:`, playersInRooms[roomCode]);
+  });
+
+  socket.on('playerAnswer', (roomCode, answer) => {
+    if (!playersInRooms[roomCode] || !games[roomCode]) return;
+
+    const player = playersInRooms[roomCode].find(p => p.id === socket.id);
+    if (!player) return;
+
+    const gameState = games[roomCode];
+    if (!gameState.acceptingAnswers) return; // Fin du temps, plus d'acceptation
+
+    player.lastAnswer = answer; // stocke la dernière réponse
+
+    // Pas besoin d’envoyer la liste à chaque réponse, ça fait trop de trafic
   });
 
   socket.on('playerReady', (roomCode, isReady) => {
@@ -181,13 +179,16 @@ io.on('connection', (socket) => {
 
     const allReady = playersInRooms[roomCode].length > 0 &&
       playersInRooms[roomCode].every(p => p.isReady);
-    if (allReady) {
+
+    if (allReady && !games[roomCode]) {
+      console.log(`🚀 Tous les joueurs sont prêts dans la room ${roomCode}, démarrage du jeu.`);
       io.to(roomCode).emit('startGame');
+      startGameForRoom(roomCode);
     }
   });
 
   socket.on('disconnect', () => {
-    console.log('🔴 Joueur déconnecté :', socket.id);
+    console.log('❌ Joueur déconnecté :', socket.id);
 
     for (const roomCode in playersInRooms) {
       const room = playersInRooms[roomCode];
@@ -195,23 +196,16 @@ io.on('connection', (socket) => {
 
       playersInRooms[roomCode] = room.filter(p => p.id !== socket.id);
 
-      // 🔁 Transférer le host s'il est parti
       if (wasHost && playersInRooms[roomCode].length > 0) {
-        // Le premier joueur devient host
         playersInRooms[roomCode][0].isHost = true;
-
-        // Les autres perdent le statut host
         for (let i = 1; i < playersInRooms[roomCode].length; i++) {
           playersInRooms[roomCode][i].isHost = false;
         }
-
-        // Informer le nouveau host directement
         io.to(playersInRooms[roomCode][0].id).emit('hostStatus', true);
       }
 
-      // Mise à jour de la liste pour la room
       io.to(roomCode).emit('playerList', playersInRooms[roomCode]);
-      console.log(`📤 Liste mise à jour envoyée à la room ${roomCode}`);
+      console.log(`📤 Room ${roomCode} liste joueurs mise à jour`);
     }
   });
 });
