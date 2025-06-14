@@ -21,7 +21,6 @@ function WaitingRoom({ roomCode, username, selectedMode, isHost }) {
     
     return () => {
       offPlayerListUpdate();
-      socket.off('allPlayersReady');
     };
   }, [navigate, roomCode]);
 

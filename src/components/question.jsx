@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import { useParams } from 'react-router-dom';
 
 const socket = io('http://localhost:3001');
 
-const Question = ({ roomCode, username, avatar }) => {
+const Question = ({ username, avatar }) => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
@@ -11,17 +12,28 @@ const Question = ({ roomCode, username, avatar }) => {
   const [score, setScore] = useState(0);
   const [isHost, setIsHost] = useState(false);
   const [players, setPlayers] = useState([]);
+  const { roomCode } = useParams();
 
   useEffect(() => {
-    socket.emit('joinRoom', roomCode, username, avatar);
+    socket.emit('joinRoom', {
+      roomId: roomCode,
+      username,
+      avatar,
+    });
 
-    // ✅ FORCER le ready automatiquement (à faire uniquement pour tests)
+    // ✅ Pour les tests : auto-ready
     socket.emit('playerReady', roomCode, true);
 
     socket.on('hostStatus', (hostStatus) => setIsHost(hostStatus));
     socket.on('playerList', (playersList) => setPlayers(playersList));
 
+    socket.on('startGame', () => {
+      console.log('✅ Événement startGame reçu (le jeu commence)');
+      // Rien à faire ici si la question suit juste après
+    });
+
     socket.on('newQuestion', ({ question, timeLeft }) => {
+      console.log('📨 newQuestion reçu:', question, timeLeft);
       setCurrentQuestion(question);
       setTimeLeft(timeLeft);
       setUserAnswer('');
@@ -36,7 +48,8 @@ const Question = ({ roomCode, username, avatar }) => {
       } else {
         setFeedback(`❌ Mauvaise réponse. Réponse attendue : ${correctAnswer}`);
       }
-      setScore(scores?.[socket.id] || 0); // sécuriser si scores est undefined
+      const player = players.find((p) => p.id === socket.id);
+      setScore(scores?.[player?.id] || 0);
     });
 
     socket.on('gameEnded', () => {
@@ -46,12 +59,13 @@ const Question = ({ roomCode, username, avatar }) => {
     return () => {
       socket.off('hostStatus');
       socket.off('playerList');
+      socket.off('startGame');
       socket.off('newQuestion');
       socket.off('timer');
       socket.off('questionEnded');
       socket.off('gameEnded');
     };
-  },[roomCode, username, avatar, userAnswer, score]);
+  }, [roomCode, username, avatar, userAnswer, score]);
 
   const handleChange = (e) => {
     setUserAnswer(e.target.value);
@@ -62,8 +76,6 @@ const Question = ({ roomCode, username, avatar }) => {
 
   return (
     <div className="container-question-component">
-      
-
       {currentQuestion.imageUrl ? (
         <div className="question-image">
           <img src={currentQuestion.imageUrl} alt="Illustration de la question" />
@@ -88,8 +100,6 @@ const Question = ({ roomCode, username, avatar }) => {
         {feedback && <div className="feedback">{feedback}</div>}
       </div>
 
-      <div className="score">Score : {score} berries</div>
-      {/* Optionnel : liste joueurs avec scores */}
       <div className="container-ranking">
         <h4>Joueurs :</h4>
         <ul>

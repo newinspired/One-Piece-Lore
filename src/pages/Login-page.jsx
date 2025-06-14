@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import { useState, useEffect } from 'react';
 import socket from '../socket';
 
-// Avatars importés
+
 import luffy from '../assets/avatars/luffy-wano.jpg';
 import rayleighAvatar from '../assets/avatars/luffy-wano.jpg';
 import trafalgarLaw from '../assets/avatars/luffy-wano.jpg';
@@ -57,7 +57,7 @@ function LoginPage({ setUsername, setRoomCode }) {
       socket.emit('joinRoom', trimmedRoom, trimmed, avatarName);
 
       // Redirection
-      navigate(`/question/${trimmedRoom}`, {
+      navigate(`/salon/${trimmedRoom}`, {
       state: {
         username: trimmed,
         avatar: avatarName,

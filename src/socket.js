@@ -27,7 +27,10 @@ export function offPlayerListUpdate() {
 
 // Écoute le signal de démarrage de partie
 export function onStartGame(callback) {
-  socket.on('startGame', callback);
+    socket.on('startGame', (...args) => {
+    console.log('✅ startGame reçu du serveur');
+    callback(...args);
+  });
 }
 
 export default socket;

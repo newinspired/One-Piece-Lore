@@ -7,9 +7,8 @@ const io = new Server(server, { cors: { origin: '*' } });
 
 const questions = require('../src/stockage/EastBlueToWaterSeven.json');
 
-const playersInRooms = {}; // roomCode => [ { id, username, avatar, isReady, isHost, score, lastAnswer } ]
-const games = {}; // roomCode => { currentIndex, intervalId, countdown, acceptingAnswers }
-
+const playersInRooms = {}; 
+const games = {}; 
 function startGameForRoom(roomCode) {
   if (!playersInRooms[roomCode]) return;
 
@@ -105,17 +104,18 @@ function startGameForRoom(roomCode) {
 io.on('connection', (socket) => {
   console.log('🔌 Joueur connecté :', socket.id);
 
-  socket.on('joinRoom', (roomCode, username, avatar) => {
-    socket.join(roomCode);
+  socket.on('joinRoom', ({ roomId, username, avatar }) => {
+    console.log(`👉 Rejoint la room ${roomId} :`, username, socket.id);
+    socket.join(roomId);
 
-    if (!playersInRooms[roomCode]) playersInRooms[roomCode] = [];
+    if (!playersInRooms[roomId]) playersInRooms[roomId] = [];
 
     let isHost = false;
-    const existingPlayerIndex = playersInRooms[roomCode].findIndex(p => p.id === socket.id);
+    const existingPlayerIndex = playersInRooms[roomId].findIndex(p => p.id === socket.id);
 
     if (existingPlayerIndex === -1) {
-      isHost = playersInRooms[roomCode].length === 0; // premier joueur = host
-      playersInRooms[roomCode].push({
+      isHost = playersInRooms[roomId].length === 0; 
+      playersInRooms[roomId].push({
         id: socket.id,
         username,
         avatar,
@@ -126,8 +126,8 @@ io.on('connection', (socket) => {
       });
     } else {
       // Joueur déjà présent (reconnexion)
-      const existingPlayer = playersInRooms[roomCode][existingPlayerIndex];
-      playersInRooms[roomCode][existingPlayerIndex] = {
+      const existingPlayer = playersInRooms[roomId][existingPlayerIndex];
+      playersInRooms[roomId][existingPlayerIndex] = {
         ...existingPlayer,
         username,
         avatar,
@@ -138,18 +138,18 @@ io.on('connection', (socket) => {
     }
 
     // Vérifier s'il y a un host sinon assigner
-    const hasHost = playersInRooms[roomCode].some(p => p.isHost);
-    if (!hasHost && playersInRooms[roomCode].length > 0) {
-      playersInRooms[roomCode][0].isHost = true;
-      if (playersInRooms[roomCode][0].id === socket.id) {
+    const hasHost = playersInRooms[roomId].some(p => p.isHost);
+    if (!hasHost && playersInRooms[roomId].length > 0) {
+      playersInRooms[roomId][0].isHost = true;
+      if (playersInRooms[roomId][0].id === socket.id) {
         isHost = true;
       }
     }
 
-    io.to(roomCode).emit('playerList', playersInRooms[roomCode]);
+    io.to(roomId).emit('playerList', playersInRooms[roomId]);
     socket.emit('hostStatus', isHost);
 
-    console.log(`📥 Room ${roomCode} joueurs:`, playersInRooms[roomCode]);
+    console.log(`📥 Room ${roomId} joueurs:`, playersInRooms[roomId]);
   });
 
   socket.on('playerAnswer', (roomCode, answer) => {

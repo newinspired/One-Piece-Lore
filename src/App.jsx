@@ -18,7 +18,7 @@ function App() {
       <Routes>
 
         <Route path="/" element={<LoginPage setUsername={setUsername} setRoomCode={setRoomCode} />} />
-        <Route path="/question/:room" element={<SalonPage username={username} roomCode={roomCode} />} />
+        <Route path="/salon/:room" element={<SalonPage username={username} roomCode={roomCode} />} />
         <Route path="/game/:room" element={<GamePage />} />
 
       </Routes>

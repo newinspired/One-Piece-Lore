@@ -7,7 +7,7 @@ import socket from '../socket.js';
 import '../styles/card-name.scss';
 import '../styles/salon-page.scss';
 
-function QuestionPage() {
+function SalonPage() {
   const { room } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ function QuestionPage() {
     const handleConnect = () => {
       console.log('📡 Connecté avec socket.id :', socket.id);
       if (username && avatar && !hasJoinedRef.current) {
-        socket.emit('joinRoom', room, username, avatar);
+        socket.emit('joinRoom', { roomId: room, username, avatar });
         hasJoinedRef.current = true; // Empêche un second envoi
         console.log('📨 Envoi unique de joinRoom');
       }
@@ -72,23 +72,23 @@ function QuestionPage() {
         <CardName currentSocketId={socket.id} />
       </div>
       <div className="container-waiting">
-        {/* Passe isHost à WaitingRoom pour gérer le mode obligatoire uniquement pour host */}
+      
         <WaitingRoom
           roomCode={room}
           username={username}
           selectedMode={selectedMode}
-          isHost={isHost}  // <-- Important
+          isHost={isHost} 
         />
       </div>
       <GameMode
         roomCode={room}
         username={username}
         setSelectedMode={setSelectedMode}
-        isHost={isHost}  // <-- Rend interactif uniquement pour host
+        isHost={isHost}  
         currentSocketId={socket.id}
       />
     </div>
   );
 }
 
-export default QuestionPage;
+export default SalonPage;
