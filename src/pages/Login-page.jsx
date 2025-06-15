@@ -84,7 +84,7 @@ function LoginPage({ setUsername, setRoomCode }) {
   return (
     <div className="login-page">
       <div className="modal-login">
-        <h3>ONE PIECE LORE</h3>
+        <h3>MANGA LORE</h3>
 
         <input
           type="text"
